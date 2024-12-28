@@ -27,7 +27,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
           envs: APP_STG_PORT, APP_STG_PATH, MINIO_STG_ENDPOINT, MINIO_STG_ACCESS_KEY, MINIO_STG_SECRET_KEY, GIT_URL
           script: |
-          
+
             if [[ -d "/home/ubuntu/${APP_STG_PATH}" ]]; then 
               cd /home/ubuntu/$APP_STG_PATH
               sudo docker compose down
@@ -45,7 +45,7 @@ jobs:
             echo "MINIO_STG_SECRET_KEY=${MINIO_STG_SECRET_KEY}" >> .env
 
             # Run app
-            sudo docker compose up app-staging --build --detach
+            sudo docker-compose up app-staging --build --detach
       
       - name: Hit Endpoint
         run: |
