@@ -15,6 +15,7 @@ jobs:
         env:
           APP_STG_PATH: ${{ vars.APP_STG_PATH }}
           GIT_URL: ${{ vars.GIT_URL }}
+          APP_STG_PORT: ${{ secrets.APP_STG_PORT }}
           MINIO_STG_ENDPOINT: ${{ secrets.MINIO_STG_ENDPOINT }}
           MINIO_STG_ACCESS_KEY: ${{ secrets.MINIO_STG_ACCESS_KEY }}
           MINIO_STG_SECRET_KEY: ${{ secrets.MINIO_STG_SECRET_KEY }}
@@ -23,7 +24,7 @@ jobs:
           host: ${{ secrets.SSH_HOST_STAGING }}
           username: ${{ secrets.SSH_USER_NAME_STAGING }}
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
-          envs: APP_STG_PATH, MINIO_STG_ENDPOINT, MINIO_STG_ACCESS_KEY, MINIO_STG_SECRET_KEY,GIT_URL
+          envs: APP_STG_PORT, APP_STG_PATH, MINIO_STG_ENDPOINT, MINIO_STG_ACCESS_KEY, MINIO_STG_SECRET_KEY, GIT_URL
           script: |
 
             if [[ -d "/home/ubuntu/${APP_STG_PATH}" ]]; then 
