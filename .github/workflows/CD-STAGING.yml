@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      APP_STG_PATH: "/home/ubuntu/satagin"
+      APP_STG_PATH: ${{ vars.APP_STG_PATH }}
       GIT_URL: ${{ vars.GIT_URL }}
       APP_STG_PORT: ${{ secrets.APP_STG_PORT }}
       MINIO_STG_ENDPOINT: ${{ secrets.MINIO_STG_ENDPOINT }}
@@ -18,8 +18,8 @@ jobs:
       MINIO_STG_SECRET_KEY: ${{ secrets.MINIO_STG_SECRET_KEY }}
 
     steps:
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@v1.2.0
+      - name: Execute deployment command
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST_STAGING }}
           username: ${{ secrets.SSH_USER_NAME_STAGING }}
