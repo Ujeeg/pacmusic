@@ -45,7 +45,7 @@ jobs:
             echo "MINIO_STG_SECRET_KEY=${MINIO_STG_SECRET_KEY}" >> .env
 
             # Run app
-            sudo docker-compose up app-staging --build --detach pacmusic-stg
+            sudo docker compose up app-staging --build --detach pacmusic-stg
       
       - name: Hit Endpoint
         run: |
