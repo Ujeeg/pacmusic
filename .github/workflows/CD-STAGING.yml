@@ -9,37 +9,33 @@ jobs:
     name: Deploy to staging server
     runs-on: ubuntu-latest
 
-    env:
-      APP_STG_PATH: ${{ vars.APP_STG_PATH }}
-      GIT_URL: ${{ secrets.GIT_URL }}
-      APP_STG_PORT: ${{ secrets.APP_STG_PORT }}
-      MINIO_STG_ENDPOINT: ${{ secrets.MINIO_STG_ENDPOINT }}
-      MINIO_STG_ACCESS_KEY: ${{ secrets.MINIO_STG_ACCESS_KEY }}
-      MINIO_STG_SECRET_KEY: ${{ secrets.MINIO_STG_SECRET_KEY }}
-
     steps:
       - name: Execute deployment command
         uses: appleboy/ssh-action@v1.0.3
+        env:
+            APP_STG_PATH: ${{ vars.APP_STG_PATH }}
+            GIT_URL: ${{ secrets.GIT_URL }}
+            APP_STG_PORT: ${{ secrets.APP_STG_PORT }}
+            MINIO_STG_ENDPOINT: ${{ secrets.MINIO_STG_ENDPOINT }}
+            MINIO_STG_ACCESS_KEY: ${{ secrets.MINIO_STG_ACCESS_KEY }}
+            MINIO_STG_SECRET_KEY: ${{ secrets.MINIO_STG_SECRET_KEY }}
+
+
         with:
           host: ${{ secrets.SSH_HOST_STAGING }}
           username: ${{ secrets.SSH_USER_NAME_STAGING }}
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
           envs: APP_STG_PORT, APP_STG_PATH, MINIO_STG_ENDPOINT, MINIO_STG_ACCESS_KEY, MINIO_STG_SECRET_KEY, GIT_URL
           script: |
-            if [[ -d "${APP_STG_PATH}" ]]; then 
-              cd "${APP_STG_PATH}"
-              sudo docker compose down 
-              git pull origin main
+          
+            if [[ -d "/home/ubuntu/${APP_STG_PATH}" ]]; then 
+              cd /home/ubuntu/$APP_STG_PATH
+              sudo docker compose down
+              git pull --rebase
             else
-              mkdir -p "${APP_STG_PATH}"
               ssh-keyscan github.com > ~/.ssh/known_hosts
-              git clone "${GIT_URL}" "${APP_STG_PATH}"
-              cd "${APP_STG_PATH}"
-            fi
-
-            # Check if .env file exists or create it
-            if [[ ! -f .env ]]; then
-              touch .env
+              git clone $GIT_URL /home/ubuntu/$APP_STG_PATH
+              cd /home/ubuntu/$APP_STG_PATH
             fi
 
             # If there are any envars update
