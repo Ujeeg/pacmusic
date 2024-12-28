@@ -23,7 +23,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
-      - name: Push current & latest flaskapp
+      - name: Push current & latest pacmusic
         uses: docker/build-push-action@v5
         with:
           context: ./app
