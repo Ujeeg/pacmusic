@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      APP_STG_PATH: ${{ secrets.APP_STG_PATH }}
-      GIT_URL: ${{ secrets.GIT_URL }}
+      APP_STG_PATH: "/home/ubuntu/satagin"
+      GIT_URL: ${{ vars.GIT_URL }}
       APP_STG_PORT: ${{ secrets.APP_STG_PORT }}
       MINIO_STG_ENDPOINT: ${{ secrets.MINIO_STG_ENDPOINT }}
       MINIO_STG_ACCESS_KEY: ${{ secrets.MINIO_STG_ACCESS_KEY }}
@@ -31,13 +31,19 @@ jobs:
               sudo docker compose down 
               git pull origin main
             else
+              mkdir -p "${APP_STG_PATH}"
               ssh-keyscan github.com > ~/.ssh/known_hosts
               git clone "${GIT_URL}" "${APP_STG_PATH}"
               cd "${APP_STG_PATH}"
             fi
 
+            # Check if .env file exists or create it
+            if [[ ! -f .env ]]; then
+              touch .env
+            fi
+
             # If there are any envars update
-            echo "APP_STG_PORT=${APP_STG_PORT}" > .env
+            echo "APP_STG_PORT=${APP_STG_PORT}" >> .env
             echo "MINIO_STG_ENDPOINT=${MINIO_STG_ENDPOINT}" >> .env
             echo "MINIO_STG_ACCESS_KEY=${MINIO_STG_ACCESS_KEY}" >> .env
             echo "MINIO_STG_SECRET_KEY=${MINIO_STG_SECRET_KEY}" >> .env
