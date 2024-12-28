@@ -23,9 +23,9 @@ jobs:
           MINIO_STG_SECRET_KEY: ${{ secrets.MINIO_STG_SECRET_KEY }}
 
         with:
-          host: ${{ secrets.SSH_HOST_PROD }}
-          username: ${{ secrets.SSH_USER_NAME_PROD }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+          host: ${{ secrets.SSH_HOST_STAGING }}
+          username: ${{ secrets.SSH_USER_NAME_STAGING }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
           envs: APP_PATH_PROD, GIT_URL, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_HOST, POSTGRES_PORT, DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, APP_NAME, APP_TAG
           script: |
 
