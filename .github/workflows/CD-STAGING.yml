@@ -9,37 +9,36 @@ jobs:
     name: Deploy to staging server
     runs-on: ubuntu-latest
 
+    env:
+      APP_STG_PATH: ${{ secrets.APP_STG_PATH }}
+      GIT_URL: ${{ vars.GIT_URL }}
+      APP_STG_PORT: ${{ secrets.APP_STG_PORT }}
+      MINIO_STG_ENDPOINT: ${{ secrets.MINIO_STG_ENDPOINT }}
+      MINIO_STG_ACCESS_KEY: ${{ secrets.MINIO_STG_ACCESS_KEY }}
+      MINIO_STG_SECRET_KEY: ${{ secrets.MINIO_STG_SECRET_KEY }}
+
     steps:
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.2.0
-        env:
-          APP_STG_PATH: ${{ vars.APP_STG_PATH }}
-          GIT_URL: ${{ vars.GIT_URL }}
-          APP_STG_PORT: ${{ secrets.APP_STG_PORT }}
-          MINIO_STG_ENDPOINT: ${{ secrets.MINIO_STG_ENDPOINT }}
-          MINIO_STG_ACCESS_KEY: ${{ secrets.MINIO_STG_ACCESS_KEY }}
-          MINIO_STG_SECRET_KEY: ${{ secrets.MINIO_STG_SECRET_KEY }}
-
         with:
           host: ${{ secrets.SSH_HOST_STAGING }}
           username: ${{ secrets.SSH_USER_NAME_STAGING }}
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
           envs: APP_STG_PORT, APP_STG_PATH, MINIO_STG_ENDPOINT, MINIO_STG_ACCESS_KEY, MINIO_STG_SECRET_KEY, GIT_URL
           script: |
-
-            if [[ -d "/home/ubuntu/${APP_STG_PATH}" ]]; then 
-              cd /home/ubuntu/$APP_STG_PATH
+            if [[ -d "${APP_STG_PATH}" ]]; then 
+              cd "${APP_STG_PATH}"
               sudo docker compose down 
               git pull origin main
             else
               ssh-keyscan github.com > ~/.ssh/known_hosts
-              git clone $GIT_URL /home/ubuntu/$APP_STG_PATH
-              cd /home/ubuntu/$APP_STG_PATH
+              git clone "${GIT_URL}" "${APP_STG_PATH}"
+              cd "${APP_STG_PATH}"
             fi
 
             # If there are any envars update
             echo "APP_STG_PORT=${APP_STG_PORT}" > .env
-            echo "MINIO_STG_ENDPOINT=${MINIO_STG_ENDPOINT}" >>
+            echo "MINIO_STG_ENDPOINT=${MINIO_STG_ENDPOINT}" >> .env
             echo "MINIO_STG_ACCESS_KEY=${MINIO_STG_ACCESS_KEY}" >> .env
             echo "MINIO_STG_SECRET_KEY=${MINIO_STG_SECRET_KEY}" >> .env
 
