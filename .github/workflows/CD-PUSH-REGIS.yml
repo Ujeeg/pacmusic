@@ -9,6 +9,8 @@ jobs:
   build-push:
     name: Push Image To Container Registry 🛒
     runs-on: ubuntu-latest
+    env:
+      APP_NAME: ${{vars.APP_NAME}}
 
     steps:
       - name: Checkout repository
