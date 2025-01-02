@@ -18,5 +18,5 @@ def get_title_from_web(url):
 web_url = "http://localhost:5000"
 title = get_title_from_web(web_url)
 
-assert title == "PacMusic"
+assert title == "PacMusic - Music Player"
 print("Testing success")
