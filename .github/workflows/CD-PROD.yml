@@ -1,4 +1,4 @@
-name: Deploy Production 🚀
+name: Deploy Production 🚀🚀🚀
 
 on:
   release:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy-production:
-    name: Deploy to production server 🚀
+    name: Deploy to production server 🚀🚀🚀
     runs-on: ubuntu-latest
 
     steps:
