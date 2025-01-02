@@ -21,7 +21,7 @@ jobs:
           APP_PROD_PORT: ${{ secrets.APP_PROD_PORT }}
           MINIO_PROD_ENDPOINT: ${{ secrets.MINIO_PROD_ENDPOINT }}
           MINIO_PROD_ACCESS_KEY: ${{ secrets.MINIO_PROD_ACCESS_KEY }}
-          MINIO_PROD_SECRET_KEY: ${{ secrets.MINIO_PROD_SECRET_KEY }} # Fixed typo here
+          MINIO_PROD_SECRET_KEY: ${{ secrets.MINIO_PROD_SECRET_KEY }} 
           GIT_URL: ${{secrets.GIT_URL}}
           DOCKERHUB_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
           DOCKERHUB_TOKEN: ${{secrets.DOCKERHUB_TOKEN}}
