@@ -35,7 +35,7 @@ jobs:
           envs: APP_PROD_PATH, GIT_URL, APP_PROD_PORT, MINIO_PROD_ENDPOINT, MINIO_PROD_ACCESS_KEY, MINIO_PROD_SECRET_KEY, DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, APP_IMAGE, APP_NAME, APP_TAG
           script: |
 
-            sudo docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN 
+            echo ${{ secrets.DOCKER_TOKEN }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
             if [[ -d "/home/ubuntu/${APP_PATH_PROD}" ]]; then 
               cd /home/ubuntu/$APP_PATH_PROD
