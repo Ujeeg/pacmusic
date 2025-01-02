@@ -15,7 +15,7 @@ jobs:
       - name: Execute deployment command
         uses: appleboy/ssh-action@v1.0.3
         env: 
-          APP_IMAGE: ujeeg6/pacmusic
+          APP_IMAGE: ${{ vars.APP_NAME }}
           APP_PROD_PATH: ${{ vars.APP_PROD_PATH }} 
           APP_TAG: ${{ github.event.release.tag_name }}
           APP_PROD_PORT: ${{ secrets.APP_PROD_PORT }}
@@ -53,7 +53,7 @@ jobs:
             echo "APP_TAG=$APP_TAG" >> .env
 
             #run app
-            sudo docker compose up --build -d pacmusic-prod
+            sudo docker compose up --build --detach pacmusic-prod
 
       - name: Hit Endpoint
         run: |
