@@ -49,5 +49,5 @@ jobs:
       
       - name: Hit Endpoint
         run: |
-          sleep 20
-          curl ${{ vars.STAGING_URL }}
+          sleep 10
+          curl ${{ secrets.STG_URL }}
