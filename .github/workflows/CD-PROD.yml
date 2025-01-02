@@ -16,7 +16,7 @@ jobs:
               uses: appleboy/ssh-action@v1.0.3
               env: 
                 APP_IMAGE: ujeeg6/pacmusic
-                APP_PATH_PROD: ${{ vars.APP_PATH_PROD }}
+                APP_PROD_PATH: ${{ vars.APP_PROD_PATH }}
                 APP_TAG: ${{ github.event.release.tag_name }}
                 APP_PROD_PORT: ${{ secrets.APP_PROD_PORT }}
                 MINIO_PROD_ENDPOINT: ${{ secrets.MINIO_PROD_ENDPOINT }}
