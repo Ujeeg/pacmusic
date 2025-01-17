@@ -15,7 +15,8 @@ jobs:
         env:
             APP_STG_PATH: ${{ vars.APP_STG_PATH }}
             GIT_URL: ${{ secrets.GIT_URL }}
-            APP_STG_PORT: ${{ secrets.APP_STG_PORT }}
+            APP_STG_PORT_1: ${{ secrets.APP_STG_PORT_1 }}
+            APP_STG_PORT_2: ${{secrets.APP_STG_PORT_2}}
             MINIO_STG_ENDPOINT: ${{ secrets.MINIO_STG_ENDPOINT }}
             MINIO_STG_ACCESS_KEY: ${{ secrets.MINIO_STG_ACCESS_KEY }}
             MINIO_STG_SECRET_KEY: ${{ secrets.MINIO_STG_SECRET_KEY }}
@@ -25,7 +26,7 @@ jobs:
           host: ${{ secrets.SSH_HOST_STAGING }}
           username: ${{ secrets.SSH_USER_NAME_STAGING }}
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
-          envs: APP_STG_PORT, APP_STG_PATH, MINIO_STG_ENDPOINT, MINIO_STG_ACCESS_KEY, MINIO_STG_SECRET_KEY, GIT_URL
+          envs: APP_STG_PORT_1, APP_STG_PORT_2, APP_STG_PATH, MINIO_STG_ENDPOINT, MINIO_STG_ACCESS_KEY, MINIO_STG_SECRET_KEY, GIT_URL
           script: |
 
             if [[ -d "/home/ubuntu/${APP_STG_PATH}" ]]; then 
@@ -39,16 +40,21 @@ jobs:
             fi
 
             # If there are any envars update
-            echo "APP_STG_PORT=${APP_STG_PORT}" >> .env
+            echo "APP_STG_PORT_1=${{ secrets.APP_STG_PORT_1 }}" >> .env
+            echo "APP_STG_PORT_2=${{ secrets.APP_STG_PORT_1 }}" >> .env
             echo "MINIO_STG_ENDPOINT=${MINIO_STG_ENDPOINT}" >> .env
             echo "MINIO_STG_ACCESS_KEY=${MINIO_STG_ACCESS_KEY}" >> .env
             echo "MINIO_STG_SECRET_KEY=${MINIO_STG_SECRET_KEY}" >> .env
 
             # Run app
-            sudo docker compose up --build --detach pacmusic-stg-1
-            sudo docker compose up --build --detach pacmusic-stg-2
+            sudo docker compose up --build --detach pacmusic-stg-1 pacmusic-stg-2
       
       - name: Hit Endpoint
         run: |
           sleep 10
-          curl ${{ secrets.STG_URL }}
+          curl ${{ secrets.STG_URL_1 }}
+      
+      - name: Hit Endpoint
+        run: |
+          sleep 10
+          curl ${{ secrets.STG_URL_2 }}
