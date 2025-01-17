@@ -60,7 +60,7 @@ jobs:
             fi
 
             # If there are any envars update
-            echo "APP_STG_PORT_1=${{ secrets.APP_STG_PORT_1 }}" >> .env
+            echo "APP_STG_PORT_1=${{ secrets.APP_STG_PORT_2 }}" >> .env
             echo "MINIO_STG_ENDPOINT=${MINIO_STG_ENDPOINT}" >> .env
             echo "MINIO_STG_ACCESS_KEY=${MINIO_STG_ACCESS_KEY}" >> .env
             echo "MINIO_STG_SECRET_KEY=${MINIO_STG_SECRET_KEY}" >> .env
