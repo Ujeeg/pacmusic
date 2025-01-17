@@ -33,12 +33,12 @@ jobs:
 
             # Deploy stg-1
             if [[ -d "/home/ubuntu/staging/${APP_STG_PATH_1}" ]]; then
-              cd /home/ubuntu/${APP_STG_PATH_1}
+              cd /home/ubuntu/staging/${APP_STG_PATH_1}
               sudo docker compose down -v --remove-orphans
               git pull --rebase
             else
               ssh-keyscan github.com > ~/.ssh/known_hosts
-              git clone $GIT_URL /home/ubuntu/${APP_STG_PATH_1}
+              git clone $GIT_URL /home/ubuntu/staging/${APP_STG_PATH_1}
               cd /home/ubuntu/staging/${APP_STG_PATH_1}
             fi
 
@@ -50,7 +50,7 @@ jobs:
 
             # Deploy stg-2
             if [[ -d "/home/ubuntu/staging/${APP_STG_PATH_2}" ]]; then
-              cd /home/ubuntu/${APP_STG_PATH_2}
+              cd /home/ubuntu/staging/${APP_STG_PATH_2}
               sudo docker compose down -v --remove-orphans
               git pull --rebase
             else
