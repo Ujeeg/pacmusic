@@ -11,6 +11,7 @@ jobs:
   deploy-production:
     name: Deploy to production server 🚀🚀🚀
     runs-on: ubuntu-latest
+    environment: Production
 
     steps:
       - name: Execute deployment command
@@ -18,7 +19,8 @@ jobs:
         env:
             APP_PROD_PATH: ${{ vars.APP_PROD_PATH }}
             GIT_URL: ${{ secrets.GIT_URL }}
-            APP_PROD_PORT: ${{ secrets.APP_PROD_PORT }}
+            APP_PROD_PORT_1: ${{ secrets.APP_PROD_PORT_1 }}
+            APP_PROD_PORT_2: ${{ secrets.APP_PROD_PORT_2 }}
             MINIO_PROD_ENDPOINT: ${{ secrets.MINIO_PROD_ENDPOINT }}
             MINIO_PROD_ACCESS_KEY: ${{ secrets.MINIO_PROD_ACCESS_KEY }}
             MINIO_PROD_SECRET_KEY: ${{ secrets.MINIO_PROD_SECRET_KEY }}
@@ -37,18 +39,18 @@ jobs:
 
             sudo docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
 
-            if [[ -d "/home/ubuntu/${APP_PROD_PATH}" ]]; then 
-              cd /home/ubuntu/$APP_PROD_PATH
+            if [[ -d "/home/ubuntu/${APP_PROD_PATH}/pacmusic-prod-1" ]]; then 
+              cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-1
               sudo docker compose down
               git pull --rebase
             else
               ssh-keyscan github.com > ~/.ssh/known_hosts
-              git clone $GIT_URL /home/ubuntu/$APP_PROD_PATH
-              cd /home/ubuntu/$APP_PROD_PATH
+              git clone $GIT_URL /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-1
+              cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-1
             fi
 
             # If there are any envars update
-            echo "APP_PROD_PORT=${APP_PROD_PORT}" >> .env
+            echo "APP_PROD_PORT_1=${{ secrets.APP_PROD_PORT_1 }}" >> .env
             echo "MINIO_PROD_ENDPOINT=${MINIO_PROD_ENDPOINT}" >> .env
             echo "MINIO_PROD_ACCESS_KEY=${MINIO_PROD_ACCESS_KEY}" >> .env
             echo "MINIO_PROD_SECRET_KEY=${MINIO_PROD_SECRET_KEY}" >> .env
@@ -56,9 +58,35 @@ jobs:
             echo "APP_TAG=$APP_TAG" >> .env
 
             # Run app
-            sudo docker compose up --build --detach pacmusic-prod
+            sudo docker compose up --build --detach pacmusic-prod-1
+
+            if [[ -d "/home/ubuntu/${APP_PROD_PATH}/pacmusic-prod-2" ]]; then 
+              cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-2
+              sudo docker compose down
+              git pull --rebase
+            else
+              ssh-keyscan github.com > ~/.ssh/known_hosts
+              git clone $GIT_URL /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-2
+              cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-2
+            fi
+
+            # If there are any envars update
+            echo "APP_PROD_PORT_2=${{ secrets.APP_PROD_PORT_2 }}" >> .env
+            echo "MINIO_PROD_ENDPOINT=${MINIO_PROD_ENDPOINT}" >> .env
+            echo "MINIO_PROD_ACCESS_KEY=${MINIO_PROD_ACCESS_KEY}" >> .env
+            echo "MINIO_PROD_SECRET_KEY=${MINIO_PROD_SECRET_KEY}" >> .env
+            echo "APP_IMAGE=${DOCKERHUB_USERNAME}/${APP_NAME}" >> .env
+            echo "APP_TAG=$APP_TAG" >> .env
+
+            # Run app
+            sudo docker compose up --build --detach pacmusic-prod-2
       
-      - name: Hit Endpoint
+      - name: Hit Endpoint 2
         run: |
           sleep 10
-          curl ${{ secrets.STG_URL }}
+          curl ${{ secrets.STG_URL_1 }}
+
+      - name: Hit Endpoint 1
+        run: |
+          sleep 10
+          curl ${{ secrets.STG_URL_2 }}
