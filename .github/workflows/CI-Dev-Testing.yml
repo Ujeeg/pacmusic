@@ -8,6 +8,7 @@ jobs:
   build-testing:
     name: Build and Testing
     runs-on: ubuntu-latest
+    environment: Development
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
