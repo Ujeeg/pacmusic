@@ -14,8 +14,7 @@ jobs:
       - name: Execute deployment command
         uses: appleboy/ssh-action@v1.0.3
         env:
-            APP_STG_PATH_1: ${{ vars.APP_STG_PATH_1 }}
-            APP_STG_PATH_2: ${{ vars.APP_STG_PATH_2 }}
+            APP_STG_PATH: ${{ vars.APP_STG_PATH }}
             GIT_URL: ${{ secrets.GIT_URL }}
             APP_STG_PORT_1: ${{ secrets.APP_STG_PORT_1 }}
             APP_STG_PORT_2: ${{secrets.APP_STG_PORT_2}}
@@ -28,49 +27,53 @@ jobs:
           host: ${{ secrets.SSH_HOST_STAGING }}
           username: ${{ secrets.SSH_USER_NAME_STAGING }}
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
-          envs: APP_STG_PORT_1, APP_STG_PORT_2, APP_STG_PATH_1, APP_STG_PATH_2, MINIO_STG_ENDPOINT, MINIO_STG_ACCESS_KEY, MINIO_STG_SECRET_KEY, GIT_URL
+          envs: APP_STG_PORT_1, APP_STG_PORT_2, APP_STG_PATH, MINIO_STG_ENDPOINT, MINIO_STG_ACCESS_KEY, MINIO_STG_SECRET_KEY, GIT_URL
           script: |
 
-            # Deploy stg-1
-            if [[ -d "/home/ubuntu/staging/${APP_STG_PATH_1}" ]]; then
-              cd /home/ubuntu/staging/${APP_STG_PATH_1}
-              sudo docker compose down -v --remove-orphans
+            if [[ -d "/home/ubuntu/${APP_STG_PATH}/pacmusic-stg-1" ]]; then 
+              cd /home/ubuntu/$APP_STG_PATH/pacmusic-stg-1
+              sudo docker compose down
               git pull --rebase
             else
               ssh-keyscan github.com > ~/.ssh/known_hosts
-              git clone $GIT_URL /home/ubuntu/staging/${APP_STG_PATH_1}
-              cd /home/ubuntu/staging/${APP_STG_PATH_1}
+              git clone $GIT_URL /home/ubuntu/$APP_STG_PATH/pacmusic-stg-1
+              cd /home/ubuntu/$APP_STG_PATH/pacmusic-stg-1
             fi
 
-            echo "APP_STG_PORT_1=${APP_STG_PORT_1}" >> .env
+            # If there are any envars update
+            echo "APP_STG_PORT_1=${{ secrets.APP_STG_PORT_1 }}" >> .env
             echo "MINIO_STG_ENDPOINT=${MINIO_STG_ENDPOINT}" >> .env
             echo "MINIO_STG_ACCESS_KEY=${MINIO_STG_ACCESS_KEY}" >> .env
             echo "MINIO_STG_SECRET_KEY=${MINIO_STG_SECRET_KEY}" >> .env
-            sudo docker compose up --build --detach pacmusic-stg-1
 
-            # Deploy stg-2
-            if [[ -d "/home/ubuntu/staging/${APP_STG_PATH_2}" ]]; then
-              cd /home/ubuntu/staging/${APP_STG_PATH_2}
-              sudo docker compose down -v --remove-orphans
+            # Run app
+            sudo docker compose up --build --detach pacmusic-stg-1 
+
+              if [[ -d "/home/ubuntu/${APP_STG_PATH}/pacmusic-stg-2" ]]; then 
+              cd /home/ubuntu/$APP_STG_PATH/pacmusic-stg-2
+              sudo docker compose down
               git pull --rebase
             else
               ssh-keyscan github.com > ~/.ssh/known_hosts
-              git clone $GIT_URL /home/ubuntu/${APP_STG_PATH_2}
-              cd /home/ubuntu/staging/${APP_STG_PATH_2}
+              git clone $GIT_URL /home/ubuntu/$APP_STG_PATH/pacmusic-stg-2
+              cd /home/ubuntu/$APP_STG_PATH/pacmusic-stg-2
             fi
 
-            echo "APP_STG_PORT_2=${APP_STG_PORT_2}" >> .env
+            # If there are any envars update
+            echo "APP_STG_PORT_1=${{ secrets.APP_STG_PORT_1 }}" >> .env
             echo "MINIO_STG_ENDPOINT=${MINIO_STG_ENDPOINT}" >> .env
             echo "MINIO_STG_ACCESS_KEY=${MINIO_STG_ACCESS_KEY}" >> .env
             echo "MINIO_STG_SECRET_KEY=${MINIO_STG_SECRET_KEY}" >> .env
+
+            # Run app
             sudo docker compose up --build --detach pacmusic-stg-2
       
-      - name: Hit Endpoint 1
+      - name: Hit Endpoint
         run: |
           sleep 10
           curl ${{ secrets.STG_URL_1 }}
       
-      - name: Hit Endpoint 2
+      - name: Hit Endpoint
         run: |
           sleep 10
           curl ${{ secrets.STG_URL_2 }}
