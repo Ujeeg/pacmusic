@@ -84,9 +84,9 @@ jobs:
       - name: Hit Endpoint 2
         run: |
           sleep 10
-          curl ${{ secrets.STG_URL_1 }}
+          curl ${{ secrets.PROD_URL_1 }}
 
       - name: Hit Endpoint 1
         run: |
           sleep 10
-          curl ${{ secrets.STG_URL_2 }}
+          curl ${{ secrets.PROD_URL_2 }}
