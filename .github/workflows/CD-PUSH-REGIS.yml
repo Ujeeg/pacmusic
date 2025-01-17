@@ -9,6 +9,7 @@ jobs:
   build-push:
     name: Push Image To Container Registry 🛒
     runs-on: ubuntu-latest
+    environment: Dockerhub
     env:
       APP_NAME: ${{vars.APP_NAME}}
 
