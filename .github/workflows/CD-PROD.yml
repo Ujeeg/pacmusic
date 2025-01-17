@@ -60,6 +60,7 @@ jobs:
             # Run app
             sudo docker compose up --build --detach pacmusic-prod-1
 
+
             if [[ -d "/home/ubuntu/${APP_PROD_PATH}/pacmusic-prod-2" ]]; then 
               cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-2
               sudo docker compose down
