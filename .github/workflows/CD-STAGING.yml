@@ -49,7 +49,7 @@ jobs:
             # Run app
             sudo docker compose up --build --detach pacmusic-stg-1 
 
-              if [[ -d "/home/ubuntu/${APP_STG_PATH}/pacmusic-stg-2" ]]; then 
+            if [[ -d "/home/ubuntu/${APP_STG_PATH}/pacmusic-stg-2" ]]; then 
               cd /home/ubuntu/$APP_STG_PATH/pacmusic-stg-2
               sudo docker compose down
               git pull --rebase
