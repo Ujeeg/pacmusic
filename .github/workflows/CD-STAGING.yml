@@ -30,6 +30,11 @@ jobs:
           envs: APP_STG_PORT_1, APP_STG_PORT_2, APP_STG_PATH, MINIO_STG_ENDPOINT, MINIO_STG_ACCESS_KEY, MINIO_STG_SECRET_KEY, GIT_URL
           script: |
 
+            if lsof -i:${{ secrets.APP_STG_PORT_1 }}; then
+            echo "Port is already in use. Exiting."
+            exit 1
+            fi
+            
             if [[ -d "/home/ubuntu/${APP_STG_PATH}" ]]; then 
               cd /home/ubuntu/$APP_STG_PATH
               sudo docker compose down
