@@ -82,12 +82,12 @@ jobs:
             # Run app
             sudo docker compose up --build --detach pacmusic-prod-2
       
-      - name: Hit Endpoint 2
+      - name: Hit Endpoint
         run: |
           sleep 10
           curl ${{ secrets.PROD_URL_1 }}
 
-      - name: Hit Endpoint 1
+      - name: Hit Endpoint
         run: |
           sleep 10
           curl ${{ secrets.PROD_URL_2 }}
