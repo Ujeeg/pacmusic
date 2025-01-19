@@ -18,8 +18,8 @@ jobs:
         env:
           APP_PROD_PATH: ${{ vars.APP_PROD_PATH }}
           GIT_URL: ${{ secrets.GIT_URL }}
-          APP_PROD_PORT_1: 5000
-          APP_PROD_PORT_2: 5001
+          APP_PROD_PORT_1: ${{ secrets.APP_PROD_PORT_1 }}
+          APP_PROD_PORT_2: ${{ secrets.APP_PROD_PORT_2 }}
           MINIO_PROD_ENDPOINT: ${{ secrets.MINIO_PROD_ENDPOINT }}
           MINIO_PROD_ACCESS_KEY: ${{ secrets.MINIO_PROD_ACCESS_KEY }}
           MINIO_PROD_SECRET_KEY: ${{ secrets.MINIO_PROD_SECRET_KEY }}
@@ -42,7 +42,6 @@ jobs:
             if [[ -d "/home/ubuntu/${APP_PROD_PATH}/pacmusic-prod-1" ]]; then 
               cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-1
               sudo docker compose down
-              git reset --hard
               git pull --rebase
             else
               ssh-keyscan github.com > ~/.ssh/known_hosts
@@ -78,8 +77,8 @@ jobs:
             echo "MINIO_PROD_SECRET_KEY=${{ secrets.MINIO_PROD_SECRET_KEY }}" >> .env
             echo "APP_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.APP_NAME }}" >> .env
             echo "APP_TAG=${{ github.event.release.tag_name }}" >> .env
-
-
+            
+            
             sudo docker compose up --build --detach pacmusic-prod-2
 
       - name: Hit Endpoint 1
