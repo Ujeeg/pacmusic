@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-push:
-    name: Push Image To Container Registry 🛒
+    name: Push Image To Container Registry 🛒🛒🛒
     runs-on: ubuntu-latest
     environment: Dockerhub
     env:
