@@ -1,4 +1,3 @@
-
 name: Deploy to Production 🚀🚀🚀
 
 on:
@@ -17,18 +16,17 @@ jobs:
       - name: Execute deployment command
         uses: appleboy/ssh-action@v1.0.3
         env:
-            APP_PROD_PATH: ${{ vars.APP_PROD_PATH }}
-            GIT_URL: ${{ secrets.GIT_URL }}
-            APP_PROD_PORT_1: ${{ secrets.APP_PROD_PORT_1 }}
-            APP_PROD_PORT_2: ${{ secrets.APP_PROD_PORT_2 }}
-            MINIO_PROD_ENDPOINT: ${{ secrets.MINIO_PROD_ENDPOINT }}
-            MINIO_PROD_ACCESS_KEY: ${{ secrets.MINIO_PROD_ACCESS_KEY }}
-            MINIO_PROD_SECRET_KEY: ${{ secrets.MINIO_PROD_SECRET_KEY }}
-            DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-            DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-            APP_NAME: ${{ vars.APP_NAME }}
-            APP_TAG: ${{ github.event.release.tag_name }}
-
+          APP_PROD_PATH: ${{ vars.APP_PROD_PATH }}
+          GIT_URL: ${{ secrets.GIT_URL }}
+          APP_PROD_PORT_1: ${{ secrets.APP_PROD_PORT_1 }}
+          APP_PROD_PORT_2: ${{ secrets.APP_PROD_PORT_2 }}
+          MINIO_PROD_ENDPOINT: ${{ secrets.MINIO_PROD_ENDPOINT }}
+          MINIO_PROD_ACCESS_KEY: ${{ secrets.MINIO_PROD_ACCESS_KEY }}
+          MINIO_PROD_SECRET_KEY: ${{ secrets.MINIO_PROD_SECRET_KEY }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_TAG: ${{ github.event.release.tag_name }}
 
         with:
           host: ${{ secrets.SSH_HOST_PRODUCTION }}
@@ -36,8 +34,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY_PRODUCTION }}
           envs: APP_PROD_PATH, APP_PROD_PORT_1, APP_PROD_PORT_2, GIT_URL, MINIO_PROD_ENDPOINT, MINIO_PROD_ACCESS_KEY, MINIO_PROD_SECRET_KEY, DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, APP_NAME, APP_TAG
           script: |
+          
 
-            sudo docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
+            sudo docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN --no-interaction
+
 
             if [[ -d "/home/ubuntu/${APP_PROD_PATH}/pacmusic-prod-1" ]]; then 
               cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-1
@@ -49,15 +49,14 @@ jobs:
               cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-1
             fi
 
-            # If there are any envars update
-            echo "APP_PROD_PORT_1=${ secrets.APP_PROD_PORT_1 }" >> .env
-            echo "MINIO_PROD_ENDPOINT=${MINIO_PROD_ENDPOINT}" >> .env
-            echo "MINIO_PROD_ACCESS_KEY=${MINIO_PROD_ACCESS_KEY}" >> .env
-            echo "MINIO_PROD_SECRET_KEY=${MINIO_PROD_SECRET_KEY}" >> .env
-            echo "APP_IMAGE=${DOCKERHUB_USERNAME}/${APP_NAME}" >> .env
-            echo "APP_TAG=$APP_TAG" >> .env
+            echo "APP_PROD_PORT_1=${{ secrets.APP_PROD_PORT_1 }}" >> .env
+            echo "MINIO_PROD_ENDPOINT=${{ secrets.MINIO_PROD_ENDPOINT }}" >> .env
+            echo "MINIO_PROD_ACCESS_KEY=${{ secrets.MINIO_PROD_ACCESS_KEY }}" >> .env
+            echo "MINIO_PROD_SECRET_KEY=${{ secrets.MINIO_PROD_SECRET_KEY }}" >> .env
+            echo "APP_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.APP_NAME }}" >> .env
+            echo "APP_TAG=${{ github.event.release.tag_name }}" >> .env
 
-            # Run app
+
             sudo docker compose up --build --detach pacmusic-prod-1
 
 
@@ -71,23 +70,23 @@ jobs:
               cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-2
             fi
 
-            # If there are any envars update
-            echo "APP_PROD_PORT_2=${ secrets.APP_PROD_PORT_2 }" >> .env
-            echo "MINIO_PROD_ENDPOINT=${MINIO_PROD_ENDPOINT}" >> .env
-            echo "MINIO_PROD_ACCESS_KEY=${MINIO_PROD_ACCESS_KEY}" >> .env
-            echo "MINIO_PROD_SECRET_KEY=${MINIO_PROD_SECRET_KEY}" >> .env
-            echo "APP_IMAGE=${DOCKERHUB_USERNAME}/${APP_NAME}" >> .env
-            echo "APP_TAG=$APP_TAG" >> .env
 
-            # Run app
+            echo "APP_PROD_PORT_2=${{ secrets.APP_PROD_PORT_2 }}" >> .env
+            echo "MINIO_PROD_ENDPOINT=${{ secrets.MINIO_PROD_ENDPOINT }}" >> .env
+            echo "MINIO_PROD_ACCESS_KEY=${{ secrets.MINIO_PROD_ACCESS_KEY }}" >> .env
+            echo "MINIO_PROD_SECRET_KEY=${{ secrets.MINIO_PROD_SECRET_KEY }}" >> .env
+            echo "APP_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.APP_NAME }}" >> .env
+            echo "APP_TAG=${{ github.event.release.tag_name }}" >> .env
+
+
             sudo docker compose up --build --detach pacmusic-prod-2
-      
-      - name: Hit Endpoint
+
+      - name: Hit Endpoint 1
         run: |
           sleep 10
           curl ${{ secrets.PROD_URL_1 }}
 
-      - name: Hit Endpoint
+      - name: Hit Endpoint 2
         run: |
           sleep 10
           curl ${{ secrets.PROD_URL_2 }}
