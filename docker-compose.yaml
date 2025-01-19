@@ -1,6 +1,8 @@
+version: '3.8'
+
 services:
 
-# DEV
+  # DEV
   pacmusic-dev:
     build:
       context: ./app
@@ -14,8 +16,10 @@ services:
       - 5000:5000
     networks:
       - pacmusic-network
+    volumes:
+      - minio-dev-vol:/path/to/minio/data 
 
-  #STAGING
+  # STAGING
   pacmusic-stg-1:
     build:
       context: ./app
@@ -40,12 +44,11 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_STG_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_STG_SECRET_KEY}
     ports:
-      - ${APP_STG_PORT_1}:5000
+      - ${APP_STG_PORT_2}:5000
     networks:
       - pacmusic-network
 
-#Production
-
+  # Production
   pacmusic-prod-1:
     build:
       context: ./app
@@ -59,7 +62,7 @@ services:
       - ${APP_PROD_PORT_1}:5000
     networks:
       - pacmusic-network
-  
+
   pacmusic-prod-2:
     build:
       context: ./app
