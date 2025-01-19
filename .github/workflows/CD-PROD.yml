@@ -34,14 +34,14 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY_PRODUCTION }}
           envs: APP_PROD_PATH, APP_PROD_PORT_1, APP_PROD_PORT_2, GIT_URL, MINIO_PROD_ENDPOINT, MINIO_PROD_ACCESS_KEY, MINIO_PROD_SECRET_KEY, DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, APP_NAME, APP_TAG
           script: |
+          
 
-            sudo docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN --no-interaction 
+            sudo docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN 
+
 
             if [[ -d "/home/ubuntu/${APP_PROD_PATH}/pacmusic-prod-1" ]]; then 
               cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-1
               sudo docker compose down
-              git reset --hard
-              git clean -fd
               git pull --rebase
             else
               ssh-keyscan github.com > ~/.ssh/known_hosts
@@ -49,23 +49,18 @@ jobs:
               cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-1
             fi
 
-
             echo "APP_PROD_PORT_1=${{ secrets.APP_PROD_PORT_1 }}" >> .env
             echo "MINIO_PROD_ENDPOINT=${{ secrets.MINIO_PROD_ENDPOINT }}" >> .env
             echo "MINIO_PROD_ACCESS_KEY=${{ secrets.MINIO_PROD_ACCESS_KEY }}" >> .env
             echo "MINIO_PROD_SECRET_KEY=${{ secrets.MINIO_PROD_SECRET_KEY }}" >> .env
             echo "APP_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.APP_NAME }}" >> .env
             echo "APP_TAG=${{ github.event.release.tag_name }}" >> .env
+            
 
-
-            sudo docker compose up --build --detach pacmusic-prod-1
-            sudo docker ps -a
 
             if [[ -d "/home/ubuntu/${APP_PROD_PATH}/pacmusic-prod-2" ]]; then 
               cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-2
               sudo docker compose down
-              git reset --hard
-              git clean -fd
               git pull --rebase
             else
               ssh-keyscan github.com > ~/.ssh/known_hosts
@@ -80,11 +75,9 @@ jobs:
             echo "MINIO_PROD_SECRET_KEY=${{ secrets.MINIO_PROD_SECRET_KEY }}" >> .env
             echo "APP_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.APP_NAME }}" >> .env
             echo "APP_TAG=${{ github.event.release.tag_name }}" >> .env
-
-
-            sudo docker compose up --build --detach pacmusic-prod-2
-            sudo docker ps -a
-
+            
+            
+            sudo docker compose up --build --detach pacmusic-prod-2 pacmusic-prod-1
 
       - name: Hit Endpoint 1
         run: |
