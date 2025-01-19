@@ -34,14 +34,15 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY_PRODUCTION }}
           envs: APP_PROD_PATH, APP_PROD_PORT_1, APP_PROD_PORT_2, GIT_URL, MINIO_PROD_ENDPOINT, MINIO_PROD_ACCESS_KEY, MINIO_PROD_SECRET_KEY, DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, APP_NAME, APP_TAG
           script: |
-
             # Docker login
-            sudo docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN 
+            sudo docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN --no-interaction 
 
             # Deploy pacmusic-prod-1
             if [[ -d "/home/ubuntu/${APP_PROD_PATH}/pacmusic-prod-1" ]]; then 
               cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-1
               sudo docker compose down
+              git reset --hard
+              git clean -fd
               git pull --rebase
             else
               ssh-keyscan github.com > ~/.ssh/known_hosts
@@ -59,11 +60,14 @@ jobs:
 
             # Start the app (pacmusic-prod-1)
             sudo docker compose up --build --detach pacmusic-prod-1
+            sudo docker ps -a
 
             # Deploy pacmusic-prod-2
             if [[ -d "/home/ubuntu/${APP_PROD_PATH}/pacmusic-prod-2" ]]; then 
               cd /home/ubuntu/$APP_PROD_PATH/pacmusic-prod-2
               sudo docker compose down
+              git reset --hard
+              git clean -fd
               git pull --rebase
             else
               ssh-keyscan github.com > ~/.ssh/known_hosts
@@ -81,6 +85,8 @@ jobs:
 
             # Start the app (pacmusic-prod-2)
             sudo docker compose up --build --detach pacmusic-prod-2
+            sudo docker ps -a
+
 
       - name: Hit Endpoint 1
         run: |
