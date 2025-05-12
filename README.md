@@ -46,7 +46,7 @@ PacMusic adalah aplikasi web musik yang menerapkan prinsip Continuous Integratio
 
 Jalankan pengujian unit:
 ```bash
-bash test/run_tests.sh```
+bash test/run_tests.sh
 
 
 
