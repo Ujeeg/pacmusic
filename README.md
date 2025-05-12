@@ -1,73 +1,62 @@
+# 🎵 PacMusic - CI/CD Web Application
 
-# 🎵 PacMusic
+PacMusic adalah aplikasi web musik yang menerapkan prinsip Continuous Integration (CI) dan Continuous Deployment (CD) menggunakan GitHub Actions, Docker, dan Git Secrets. Aplikasi ini akan dideploy ke AWS EC2 dengan dua lingkungan: staging dan production.
 
-PacMusic adalah proyek pembelajaran sederhana yang bertujuan untuk memahami dan menerapkan proses Continuous Integration (CI) dan Continuous Deployment (CD) dalam pengembangan aplikasi web menggunakan GitHub Actions dan Docker.
+## 🚀 Tujuan Proyek
+- Automatisasi pengujian dan deployment aplikasi.
+- Menggunakan GitHub Actions, Docker, dan Git Secrets.
+- Menyediakan dua lingkungan: Staging dan Production.
 
-## ✨ Fitur Utama
+## 🔧 Teknologi yang Digunakan
+- **CI/CD**: GitHub Actions
+- **Containerization**: Docker
+- **Cloud**: AWS EC2
+- **Keamanan**: Git Secrets
 
-- CI/CD pipeline otomatis menggunakan **GitHub Actions**
-- Dockerized deployment menggunakan **Docker Compose**
-- Struktur proyek yang modular dan mudah dikembangkan
-- Folder `test/` terdedikasi untuk unit testing
-- Variabel lingkungan dikelola menggunakan file `.env`
+## ⚙️ Alur Kerja CI/CD
 
-## 🛠 Teknologi yang Digunakan
+### Staging Environment:
+- Menggunakan GitHub Actions untuk build dan pengujian aplikasi di staging.
+  
+### Production Deployment:
+- Setelah pengujian di staging, deployment otomatis ke production dengan versi baru.
 
-- Python
-- JavaScript
-- HTML & CSS
-- Docker
-- GitHub Actions
-- Bash (untuk script testing & deployment)
+## 🛠️ Cara Menjalankan Proyek
 
-## 🚀 Cara Menjalankan Proyek
+1. **Kloning Repositori**
+    ```bash
+    git clone https://github.com/Ujeeg/pacmusic.git
+    cd pacmusic
+    ```
 
-Berikut adalah langkah-langkah untuk menjalankan aplikasi ini secara lokal:
+2. **Persiapkan Variabel Lingkungan**
+    ```bash
+    cp .env.example .env
+    ```
 
-```bash
-# Clone repositori
-git clone https://github.com/Ujeeg/pacmusic.git
-cd pacmusic
+3. **Bangun dan Jalankan Aplikasi**
+    ```bash
+    docker-compose up --build
+    ```
 
-# Salin file .env.example menjadi .env (jika tersedia)
-cp .env.example .env
-
-# Jalankan aplikasi menggunakan Docker Compose
-docker-compose up --build
-```
-
-## 🧾 Struktur Direktori
-
-```
-pacmusic/
-│
-├── app/                  # Kode sumber utama aplikasi
-├── test/                 # Unit testing dan integrasi
-├── .github/workflows/   # File konfigurasi GitHub Actions
-├── docker-compose.yml   # Konfigurasi Docker Compose
-├── .env.example         # Contoh konfigurasi environment
-└── README.md            # Dokumentasi proyek
-```
+4. **Akses Aplikasi**
+    Akses aplikasi di [http://localhost:8000](http://localhost:8000).
 
 ## 🧪 Pengujian
 
-Pengujian dilakukan dengan skrip yang terdapat di dalam folder `test/`. Jalankan pengujian dengan:
-
+Jalankan pengujian unit:
 ```bash
-bash test/test_app.sh
-```
+bash test/run_tests.sh```
 
-> Pastikan semua dependensi dan environment sudah dikonfigurasi dengan benar sebelum menjalankan pengujian.
 
-## 📌 Catatan
 
-- Proyek ini dibuat untuk keperluan belajar CI/CD dan Docker, bukan untuk produksi.
-- Pull Request dan masukan sangat diterima!
-
-## 🤝 Kontribusi
-
-Ingin berkontribusi? Silakan fork proyek ini dan buat pull request. Kamu juga bisa membuka issue jika menemukan bug atau punya ide pengembangan fitur baru.
-
-## 📄 Lisensi
-
-Proyek ini dilisensikan di bawah [MIT License](LICENSE).
+📂 Struktur Proyek
+    ```
+pacmusic/
+├── app/
+├── test/
+├── .github/workflows/
+├── docker-compose.yaml
+├── .env.example
+└── README.md
+    ```
